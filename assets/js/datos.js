@@ -12,13 +12,28 @@ const CONFIG = {
   // Número de WhatsApp en formato internacional, sin + ni espacios
   whatsapp: '593999109718',
   telefonoVisible: '0999109718',
-  email: 'hola@elisabolsos.com',
-  instagram: 'elisabolsos.ec',
+  email: 'elisabolsos@hotmail.com',
+  // Solo el usuario, sin @
+  instagram: 'elisabolsos',
+  tiktok: 'elisabolsos.ec',
   ciudad: 'Ecuador',
   moneda: '$',
+  // Plazos: modelos del catálogo y bolsos personalizados
+  entregaCatalogo: '3 días laborables',
   diasElaboracion: '8–12 días',
   envio: 'Envíos a todo Ecuador · Pago contra entrega disponible',
   frase: 'Diseños que cuentan historias. Hechos con amor, tejidos para ti.'
+};
+
+/* Datos del titular para las páginas legales (aviso legal, privacidad…).
+   Completa ruc y domicilio: mientras estén vacíos, esas líneas no se muestran.
+   La ley ecuatoriana exige identificar al proveedor, así que no lo dejes pendiente. */
+const TITULAR = {
+  nombre: 'Elisa Bolsos',
+  ruc: '',          // RUC o cédula del titular, p. ej. '1712345678001'
+  domicilio: '',    // Dirección completa, p. ej. 'Av. Amazonas N00-00, Quito'
+  pais: 'Ecuador',
+  actualizado: '10 de septiembre de 2026'
 };
 
 /* Detalles que comparten todas las piezas, según el catálogo */

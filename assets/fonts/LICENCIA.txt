@@ -1,0 +1,4 @@
+Tipografías: Cormorant Garamond, Jost y Playfair Display.
+Licencia SIL Open Font License 1.1 (https://openfontlicense.org).
+Archivos obtenidos del proyecto Fontsource (subconjunto latino, formato woff2).
+Se alojan en el propio sitio para no enviar datos de los visitantes a servidores de terceros.

@@ -11,6 +11,13 @@ const RUTA_IMG = 'assets/img/';
 const foto = p => RUTA_IMG + p;
 const fotoSm = p => RUTA_IMG + 'sm/' + p;
 const money = n => CONFIG.moneda + Number(n).toFixed(2);
+const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const enlaceInstagram = () => `https://www.instagram.com/${CONFIG.instagram}/`;
+const enlaceTikTok = () => `https://www.tiktok.com/@${CONFIG.tiktok}`;
+
+/* Un pedido es personalizado si viene del personalizador */
+const esPersonalizado = item => String(item.id).startsWith('medida-');
 
 const LLAVE_BOLSA = 'elisa_bolsa';
 const LLAVE_FAV = 'elisa_favoritos';
@@ -202,7 +209,7 @@ function pintarPie() {
                 <span class="marca-sub">Bolsos tejidos</span>
               </span>
             </a>
-            <p class="pie-intro">Bolsos en trapillo tejidos punto por punto en ${CONFIG.ciudad}. Cada pieza se hace bajo pedido y lleva la firma de quien la teje.</p>
+            <p class="pie-intro">Bolsos en trapillo tejidos punto por punto en ${CONFIG.ciudad}. Cada pieza lleva la firma de quien la teje.</p>
           </div>
           <div>
             <h5>Tienda</h5>
@@ -216,23 +223,27 @@ function pintarPie() {
             <h5>Pedidos</h5>
             <ul>
               <li>${CONFIG.envio.split('·')[0].trim()}</li>
-              <li>Pago contra entrega</li>
-              <li>Elaboración: ${CONFIG.diasElaboracion}</li>
-              <li><a href="contacto.html">Preguntas frecuentes</a></li>
+              <li>Catálogo: entrega en ${CONFIG.entregaCatalogo}</li>
+              <li>Personalizados: ${CONFIG.diasElaboracion}</li>
+              <li><a href="contacto.html">Contacto y preguntas frecuentes</a></li>
             </ul>
           </div>
           <div>
-            <h5>Escríbenos</h5>
+            <h5>Síguenos en nuestras redes</h5>
             <ul>
-              <li><a href="${enlaceWhatsApp('¡Hola Elisa! Vengo de la página web 💗')}" target="_blank" rel="noopener">WhatsApp ${CONFIG.telefonoVisible}</a></li>
-              <li><a href="https://instagram.com/${CONFIG.instagram}" target="_blank" rel="noopener">@${CONFIG.instagram}</a></li>
-              <li><a href="mailto:${CONFIG.email}">${CONFIG.email}</a></li>
+              <li><a href="${enlaceInstagram()}" target="_blank" rel="noopener">Instagram · @${CONFIG.instagram}</a></li>
+              <li><a href="${enlaceTikTok()}" target="_blank" rel="noopener">TikTok · @${CONFIG.tiktok}</a></li>
             </ul>
           </div>
         </div>
         <div class="pie-abajo">
           <span>© <span id="anio"></span> Elisa · Bolsos tejidos a mano</span>
-          <span>Hecho con hilo, paciencia y cariño</span>
+          <nav class="pie-legal" aria-label="Información legal">
+            <a href="aviso-legal.html">Aviso legal</a>
+            <a href="terminos.html">Condiciones de venta</a>
+            <a href="privacidad.html">Privacidad</a>
+            <a href="cookies.html">Cookies</a>
+          </nav>
         </div>
       </div>
     </footer>`;
@@ -313,6 +324,26 @@ function pintarBolsa() {
   $('#cerrar-bolsa').addEventListener('click', cerrarBolsa);
 }
 
+/* La bolsa tiene dos pasos: la lista de piezas y los datos de envío.
+   Los datos de envío viven solo en memoria mientras la página está abierta:
+   no se guardan en el navegador ni se envían a ningún servidor. */
+let PASO_BOLSA = 'lista';
+const DATOS_ENVIO = { nombre: '', cedula: '', provincia: '', ciudad: '', direccion: '', referencia: '', acepto: false };
+
+const PROVINCIAS = ['Azuay', 'Bolívar', 'Cañar', 'Carchi', 'Chimborazo', 'Cotopaxi', 'El Oro', 'Esmeraldas',
+  'Galápagos', 'Guayas', 'Imbabura', 'Loja', 'Los Ríos', 'Manabí', 'Morona Santiago', 'Napo', 'Orellana',
+  'Pastaza', 'Pichincha', 'Santa Elena', 'Santo Domingo de los Tsáchilas', 'Sucumbíos', 'Tungurahua',
+  'Zamora Chinchipe'];
+
+function textoPlazos() {
+  const hayCatalogo = BOLSA.some(i => !esPersonalizado(i));
+  const hayMedida = BOLSA.some(esPersonalizado);
+  const partes = [];
+  if (hayCatalogo) partes.push(`modelos del catálogo: entrega en ${CONFIG.entregaCatalogo}`);
+  if (hayMedida) partes.push(`personalizados: ${CONFIG.diasElaboracion} de elaboración`);
+  return partes.join(' · ');
+}
+
 function refrescarBolsa() {
   const cont = $('#contador-bolsa');
   if (cont) {
@@ -324,6 +355,7 @@ function refrescarBolsa() {
   if (!lista) return;
 
   if (!BOLSA.length) {
+    PASO_BOLSA = 'lista';
     lista.innerHTML = `
       <div class="bolsa-vacia">
         ${ICONOS.bolsa}
@@ -334,12 +366,14 @@ function refrescarBolsa() {
     return;
   }
 
+  if (PASO_BOLSA === 'datos') { pintarPasoDatos(); return; }
+
   lista.innerHTML = BOLSA.map((item, i) => `
     <article class="bolsa-item">
-      <img src="${item.img}" alt="${item.nombre}" loading="lazy">
+      <img src="${item.img}" alt="${esc(item.nombre)}" loading="lazy">
       <div>
-        <h4>${item.nombre}</h4>
-        <div class="meta">${item.meta || ''}</div>
+        <h4>${esc(item.nombre)}</h4>
+        <div class="meta">${esc(item.meta || '')}</div>
         <div class="fila">
           <div class="cantidad">
             <button data-accion="menos" data-indice="${i}" aria-label="Quitar una unidad">−</button>
@@ -356,8 +390,8 @@ function refrescarBolsa() {
 
   $('#bolsa-pie').innerHTML = `
     <div class="total"><span>Total</span><strong>${money(totalBolsa())}</strong></div>
-    <p class="nota-pie">${CONFIG.envio}. Confirmamos disponibilidad y tiempo de tejido por WhatsApp.</p>
-    <a class="boton boton-wa boton-bloque" id="pedir-wa" href="#">${ICONOS.whatsapp} Pedir por WhatsApp</a>`;
+    <p class="nota-pie">${CONFIG.envio}. Plazos — ${textoPlazos()}. El costo de envío te lo confirmamos por WhatsApp.</p>
+    <button class="boton boton-principal boton-bloque" id="ir-datos">Continuar con el envío</button>`;
 
   $$('#bolsa-items [data-accion]').forEach(b => {
     b.addEventListener('click', () => {
@@ -368,15 +402,110 @@ function refrescarBolsa() {
     });
   });
 
-  $('#pedir-wa').href = enlaceWhatsApp(mensajePedido());
-  $('#pedir-wa').target = '_blank';
-  $('#pedir-wa').rel = 'noopener';
+  $('#ir-datos').addEventListener('click', () => {
+    PASO_BOLSA = 'datos';
+    refrescarBolsa();
+    $('#bolsa-items').scrollTop = 0;
+    $('#envio-nombre')?.focus();
+  });
+}
+
+function pintarPasoDatos() {
+  const d = DATOS_ENVIO;
+  const opcion = p => `<option ${d.provincia === p ? 'selected' : ''}>${p}</option>`;
+  $('#bolsa-items').innerHTML = `
+    <form id="form-envio" class="form-envio" novalidate>
+      <button type="button" class="volver-bolsa" id="volver-bolsa">&larr; Volver a la bolsa</button>
+      <p class="texto-suave form-envio-intro">${unidadesBolsa()} ${unidadesBolsa() === 1 ? 'pieza' : 'piezas'} · ${money(totalBolsa())}. Completa tus datos y te llegan escritos en el WhatsApp.</p>
+
+      <div class="campo">
+        <label for="envio-nombre">Nombre completo *</label>
+        <input type="text" id="envio-nombre" name="nombre" required autocomplete="name" value="${esc(d.nombre)}" placeholder="Nombre y apellidos de quien recibe">
+      </div>
+      <div class="campo">
+        <label for="envio-cedula">Cédula (opcional)</label>
+        <input type="text" id="envio-cedula" name="cedula" inputmode="numeric" pattern="[0-9]{10}|[0-9]{13}" maxlength="13" value="${esc(d.cedula)}" placeholder="La piden el courier y la factura">
+      </div>
+      <div class="fila-campos">
+        <div class="campo">
+          <label for="envio-provincia">Provincia</label>
+          <select id="envio-provincia" name="provincia" autocomplete="address-level1">
+            <option value="" ${d.provincia ? '' : 'selected'}>Elige…</option>
+            ${PROVINCIAS.map(opcion).join('')}
+          </select>
+        </div>
+        <div class="campo">
+          <label for="envio-ciudad">Ciudad de envío *</label>
+          <input type="text" id="envio-ciudad" name="ciudad" required autocomplete="address-level2" value="${esc(d.ciudad)}" placeholder="Ej.: Quito">
+        </div>
+      </div>
+      <div class="campo">
+        <label for="envio-direccion">Dirección de entrega *</label>
+        <textarea id="envio-direccion" name="direccion" required autocomplete="street-address" rows="2" placeholder="Calle principal, número y calle secundaria">${esc(d.direccion)}</textarea>
+      </div>
+      <div class="campo">
+        <label for="envio-referencia">Referencia (opcional)</label>
+        <input type="text" id="envio-referencia" name="referencia" value="${esc(d.referencia)}" placeholder="Frente al parque, casa esquinera, piso 3…">
+      </div>
+
+      <label class="casilla ${d.acepto ? 'activa' : ''}" for="envio-acepto">
+        <input type="checkbox" id="envio-acepto" name="acepto" required ${d.acepto ? 'checked' : ''}>
+        <span>He leído la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a> y las <a href="terminos.html" target="_blank" rel="noopener">condiciones de venta</a>, y acepto que usen estos datos para gestionar mi pedido. *</span>
+      </label>
+    </form>`;
+
+  $('#bolsa-pie').innerHTML = `
+    <div class="total"><span>Total</span><strong>${money(totalBolsa())}</strong></div>
+    <p class="nota-pie">Plazos — ${textoPlazos()}. El costo de envío se suma al confirmar.</p>
+    <p class="pista form-envio-error" id="envio-error" role="alert" hidden></p>
+    <button type="submit" form="form-envio" class="boton boton-wa boton-bloque" id="pedir-wa">${ICONOS.whatsapp} Enviar pedido por WhatsApp</button>
+    <p class="pista" style="margin-top:10px;text-align:center">Se abre WhatsApp con todo escrito. Tú solo lo envías.</p>`;
+
+  const form = $('#form-envio');
+  form.addEventListener('input', e => {
+    const campo = e.target;
+    if (!campo.name) return;
+    DATOS_ENVIO[campo.name] = campo.type === 'checkbox' ? campo.checked : campo.value;
+    if (campo.type === 'checkbox') campo.closest('.casilla').classList.toggle('activa', campo.checked);
+    campo.removeAttribute('aria-invalid');
+  });
+  $('#volver-bolsa').addEventListener('click', () => { PASO_BOLSA = 'lista'; refrescarBolsa(); });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const error = $('#envio-error');
+    const invalidos = $$('input, select, textarea', form).filter(c => !c.checkValidity());
+    invalidos.forEach(c => c.setAttribute('aria-invalid', 'true'));
+    if (invalidos.length) {
+      const primero = invalidos[0];
+      error.textContent = primero.type === 'checkbox'
+        ? 'Para enviar el pedido necesitamos que aceptes la política de privacidad.'
+        : primero.name === 'cedula'
+          ? 'La cédula debe tener 10 dígitos (o 13 si es RUC). Si prefieres, déjala vacía.'
+          : 'Completa los campos marcados con * para que podamos enviarte el bolso.';
+      error.hidden = false;
+      primero.focus();
+      return;
+    }
+    error.hidden = true;
+    window.open(enlaceWhatsApp(mensajePedido()), '_blank', 'noopener');
+    aviso('Abrimos WhatsApp con tu pedido listo');
+  });
 }
 
 function mensajePedido() {
+  const d = DATOS_ENVIO;
   const lineas = BOLSA.map(i =>
     `• ${i.cantidad} × ${i.nombre}${i.meta ? ` (${i.meta})` : ''} — ${money(i.precio * i.cantidad)}`);
-  return `¡Hola Elisa! Quiero hacer este pedido 💗\n\n${lineas.join('\n')}\n\nTotal: ${money(totalBolsa())}\n\nMi nombre: \nCiudad de envío: `;
+  const datos = [
+    `Nombre completo: ${d.nombre.trim()}`,
+    d.cedula.trim() && `Cédula: ${d.cedula.trim()}`,
+    d.provincia && `Provincia: ${d.provincia}`,
+    `Ciudad de envío: ${d.ciudad.trim()}`,
+    `Dirección de entrega: ${d.direccion.trim().replace(/\s*\n\s*/g, ', ')}`,
+    d.referencia.trim() && `Referencia: ${d.referencia.trim()}`
+  ].filter(Boolean);
+  return `¡Hola Elisa! Quiero hacer este pedido 💗\n\n${lineas.join('\n')}\n\nTotal: ${money(totalBolsa())} (sin envío)\nPlazo: ${textoPlazos()}\n\n📦 Datos de envío\n${datos.join('\n')}`;
 }
 
 function enlaceWhatsApp(texto) {
@@ -384,6 +513,7 @@ function enlaceWhatsApp(texto) {
 }
 
 function abrirBolsa() {
+  PASO_BOLSA = 'lista';
   refrescarBolsa();
   $('#bolsa').classList.add('abierta');
   $('#capa').classList.add('abierta');
@@ -489,7 +619,7 @@ function abrirProducto(id) {
         <div class="ficha">
           <div><b>${p.medidas}</b>Medidas</div>
           <div><b>${p.color}</b>Color</div>
-          <div><b>${CONFIG.diasElaboracion}</b>Elaboración</div>
+          <div><b>${CONFIG.entregaCatalogo}</b>Entrega</div>
         </div>
         <div class="producto-acciones" style="align-items:center">
           <div class="cantidad">
@@ -844,6 +974,29 @@ function conectarBotonesPersonalizador() {
 }
 
 /* ------------------------------------------------------------
+   Páginas legales: rellena titular y contacto desde datos.js.
+   Si un dato del titular está vacío, se oculta el elemento que lo pide.
+------------------------------------------------------------ */
+function rellenarDatosLegales() {
+  $$('[data-si]').forEach(el => { if (!TITULAR[el.dataset.si]) el.remove(); });
+  $$('[data-titular]').forEach(el => { el.textContent = TITULAR[el.dataset.titular] || ''; });
+  const enlaces = {
+    email: [`mailto:${CONFIG.email}`, CONFIG.email],
+    whatsapp: [enlaceWhatsApp('¡Hola Elisa! 💗'), CONFIG.telefonoVisible],
+    instagram: [enlaceInstagram(), '@' + CONFIG.instagram],
+    tiktok: [enlaceTikTok(), '@' + CONFIG.tiktok]
+  };
+  $$('[data-enlace]').forEach(el => {
+    const [href, texto] = enlaces[el.dataset.enlace] || [];
+    if (!href) return;
+    el.href = href;
+    if (!el.textContent.trim()) el.textContent = texto;
+    if (!href.startsWith('mailto:')) { el.target = '_blank'; el.rel = 'noopener'; }
+  });
+  $$('[data-config]').forEach(el => { el.textContent = CONFIG[el.dataset.config] || ''; });
+}
+
+/* ------------------------------------------------------------
    Formulario de contacto
 ------------------------------------------------------------ */
 function conectarContacto() {
@@ -932,6 +1085,8 @@ document.addEventListener('DOMContentLoaded', () => {
   pintarModal();
   refrescarBolsa();
   refrescarContadorFavoritos();
+
+  rellenarDatosLegales();
 
   // Logo completo donde se pida
   $$('[data-logo-completo]').forEach((el, i) => { el.innerHTML = logoCompleto('full' + i); });

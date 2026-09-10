@@ -9,10 +9,15 @@ a cualquier hosting: Netlify, Vercel, GitHub Pages, Hostinger, cPanel…
 index.html          Portada
 catalogo.html       Catálogo con filtros, búsqueda y orden
 personaliza.html    Personalizador de bolsos con precio en vivo
-contacto.html       Formulario, datos de contacto y preguntas frecuentes
+contacto.html       Formulario, «Escríbenos» (WhatsApp, Instagram, TikTok, correo) y preguntas frecuentes
+aviso-legal.html    Titular del sitio, condiciones de uso, propiedad intelectual
+terminos.html       Condiciones de venta: pedidos, pago, plazos, envíos, cambios, devoluciones, garantía
+privacidad.html     Política de privacidad (Ley Orgánica de Protección de Datos Personales)
+cookies.html        Política de cookies (la web no usa cookies de seguimiento)
 
 assets/css/estilo.css   Todo el diseño (colores, tipografías, responsive)
-assets/js/datos.js      ← LO QUE MÁS VAS A EDITAR: productos, precios, colores, WhatsApp
+assets/js/datos.js      ← LO QUE MÁS VAS A EDITAR: productos, precios, colores, contacto, titular
+assets/fonts/           Tipografías alojadas en el propio sitio (sin Google Fonts)
 assets/js/app.js        Lógica: logo SVG, bolsa, favoritos, filtros, formularios
 assets/img/             Fotos (versión grande) y assets/img/sm/ (versión ligera para las tarjetas)
 
@@ -21,7 +26,9 @@ Catalogo Elisa fotos/   Fotos originales sin comprimir (no se publican, guárdal
 
 ## Qué hace la web
 
-- **Bolsa de compras** que se guarda en el navegador y arma un pedido listo para enviar por WhatsApp.
+- **Bolsa de compras** en dos pasos: primero las piezas, luego los datos de envío (nombre completo,
+  cédula opcional, provincia, ciudad, dirección y referencia, más la casilla de privacidad).
+  El mensaje de WhatsApp sale con todo completado. Los datos de envío no se guardan en el navegador.
 - **Favoritos** con el corazón de cada pieza; se filtran desde el catálogo.
 - **Catálogo** con filtro por colección, buscador por nombre o color y orden por precio o novedad.
 - **Ficha de producto** en ventana emergente con medidas, detalles y cantidad.
@@ -35,9 +42,21 @@ que es como ya trabaja el taller.
 
 ## Cambios habituales
 
-### Cambiar el número de WhatsApp, correo o Instagram
+### Cambiar el número de WhatsApp, correo, Instagram o TikTok
 En `assets/js/datos.js`, arriba del todo, en `CONFIG`.
 El número va en formato internacional y sin signos: `593999109718`.
+Instagram y TikTok van sin la @: `instagram: 'elisabolsos'`, `tiktok: 'elisabolsos.ec'`.
+Los plazos están en `entregaCatalogo` (3 días laborables) y `diasElaboracion` (personalizados).
+
+### Datos del titular (páginas legales)
+En `assets/js/datos.js`, en `TITULAR`. **Completa `ruc` y `domicilio`**: mientras estén vacíos,
+esas líneas no aparecen en las páginas legales, pero la ley pide identificar al proveedor.
+Cuando cambies algo de las políticas, actualiza también `actualizado` (la fecha).
+
+### Cookies
+La web no usa cookies ni analítica, y las tipografías se sirven desde `assets/fonts/`, así que no
+hace falta banner de consentimiento. Si algún día añades Google Analytics, un píxel de Meta o
+vídeos incrustados, eso cambia: habrá que actualizar `cookies.html` y pedir permiso antes de cargarlos.
 
 ### Cambiar un precio
 En `assets/js/datos.js`, busca el producto y edita `precio: 46`.
@@ -94,8 +113,7 @@ forro interior, broches seguros y diseño exclusivo.
 - **Revisar a qué colección quedó asignada cada foto.** Las agrupé por parecido visual con el
   catálogo; hay algunas dudosas (ver más abajo). Cambiar una pieza de colección es editar
   el campo `coleccion:` de ese producto en `datos.js`.
-- Reemplazar `hola@elisabolsos.com` por el correo real (o quitarlo de `CONFIG`).
-- Los tiempos de elaboración (8–12 días), la forma de pago y las preguntas frecuentes no venían
-  en el catálogo: los escribí como propuesta. Ajústalos en `contacto.html` y en `CONFIG`.
+- Completar RUC/cédula y domicilio en `TITULAR` (ver arriba).
+- Hacer revisar los textos legales por un abogado en Ecuador antes de darlos por definitivos.
 - Si algún día quieres pago en línea, se puede añadir un botón de PayPal o de transferencia
   sobre la misma bolsa, sin rehacer el sitio.
