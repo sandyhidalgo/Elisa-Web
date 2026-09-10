@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personaliza tu bolso · Elisa Bolsos Tejidos</title>
+<meta name="description" content="Arma tu bolso tejido a mano: elige el modelo base, el color del trapillo, los herrajes, la borla y la placa con tu nombre. Te damos el precio al instante.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%A7%B6%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="assets/css/estilo.css">
+</head>
+<body data-pagina="personaliza">
+
+<div id="cabecera"></div>
+
+<main>
+
+  <section class="seccion" style="padding-bottom:40px">
+    <div class="contenedor centrado">
+      <div class="encabezado-seccion">
+        <svg class="filigrana" viewBox="0 0 190 22" aria-hidden="true">
+          <path d="M4 11h58M128 11h58"/>
+          <circle cx="72" cy="11" r="3"/>
+          <circle cx="118" cy="11" r="3"/>
+          <path class="corazon" d="M95 18c-6-5-8-8-5-11 2-2 5 0 5 2 0-2 3-4 5-2 3 3 1 6-5 11Z"/>
+        </svg>
+        <p class="eyebrow">Hecho para ti</p>
+        <h1 class="titulo-seccion">Teje tu bolso</h1>
+        <p class="texto-suave" style="max-width:58ch;margin:16px auto 0">Cuatro decisiones y ya está: modelo, tamaño, color y detalles. El precio se calcula mientras eliges, y lo confirmamos por WhatsApp antes de montar la aguja.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-bottom:90px">
+    <div class="contenedor">
+      <div style="display:grid;grid-template-columns:1.5fr .9fr;gap:34px;align-items:start" class="grid-personaliza">
+
+        <div class="tarjeta" id="personalizador">
+
+          <div class="campo">
+            <label>01 · Modelo base</label>
+            <div class="opciones" id="modelos"></div>
+          </div>
+
+          <div class="campo">
+            <label>02 · Tamaño</label>
+            <div class="opciones" id="tamanos"></div>
+          </div>
+
+          <div class="campo">
+            <label>03 · Color del trapillo</label>
+            <div class="muestrario" id="colores"></div>
+            <p class="pista">¿Tienes otro tono en mente? Escríbelo en las notas y buscamos el hilo.</p>
+          </div>
+
+          <div class="campo">
+            <label>04 · Herrajes</label>
+            <div class="opciones" id="herrajes"></div>
+          </div>
+
+          <div class="campo">
+            <label>05 · Detalles adicionales</label>
+            <div class="casillas" id="extras"></div>
+          </div>
+
+          <div class="fila-campos">
+            <div class="campo">
+              <label for="placa">Placa con nombre (opcional)</label>
+              <input type="text" id="placa" name="placa" maxlength="14" placeholder="Ej.: Sarita">
+              <p class="pista">Placa metálica grabada · +$6</p>
+            </div>
+            <div class="campo">
+              <label for="notas">Notas para el taller</label>
+              <textarea id="notas" name="notas" placeholder="Largo de la bandolera, un color exacto, para cuándo lo necesitas…"></textarea>
+            </div>
+          </div>
+
+        </div>
+
+        <aside class="tarjeta resumen">
+          <p class="eyebrow">Tu bolso</p>
+          <h2 style="font-size:1.9rem;font-style:italic;margin-bottom:18px">Resumen</h2>
+
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+            <span id="resumen-muestra" style="width:46px;height:46px;border-radius:50%;box-shadow:0 0 0 1px var(--linea);display:block"></span>
+            <span style="font-family:var(--serif);font-size:1.3rem;font-style:italic"></span>
+          </div>
+
+          <div id="resumen-lineas"></div>
+
+          <div class="resumen-total">
+            <span style="font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cacao-suave)">Estimado</span>
+            <strong id="resumen-total">$0.00</strong>
+          </div>
+          <p class="pista" style="margin-bottom:18px">Precio referencial. Lo confirmamos por WhatsApp según el hilo disponible y los herrajes que elijas.</p>
+
+          <a class="boton boton-wa boton-bloque" id="enviar-personalizado" href="#" style="margin-bottom:10px">Enviar por WhatsApp</a>
+          <button class="boton boton-secundario boton-bloque" id="guardar-personalizado">Guardar en la bolsa</button>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion seccion-papel">
+    <div class="contenedor centrado">
+      <div class="encabezado-seccion">
+        <h2 class="titulo-seccion">Lo que sí y lo que no</h2>
+      </div>
+      <div class="grid-colecciones">
+        <article class="tarjeta revelar">
+          <h3 style="font-size:1.5rem;font-style:italic;margin-bottom:10px">Sí tejemos</h3>
+          <p class="texto-suave" style="margin:0">Cualquier modelo del catálogo en otro color, con o sin flecos, con bandolera larga, con corazones o con la placa grabada.</p>
+        </article>
+        <article class="tarjeta revelar">
+          <h3 style="font-size:1.5rem;font-style:italic;margin-bottom:10px">Cuánto demora</h3>
+          <p class="texto-suave" style="margin:0">De 8 a 12 días. Los modelos con corazones tejidos toman hasta 14, porque cada uno se hace aparte.</p>
+        </article>
+        <article class="tarjeta revelar">
+          <h3 style="font-size:1.5rem;font-style:italic;margin-bottom:10px">Cómo se paga</h3>
+          <p class="texto-suave" style="margin:0">50% para empezar y el resto contra entrega. Aceptamos transferencia y efectivo.</p>
+        </article>
+        <article class="tarjeta revelar">
+          <h3 style="font-size:1.5rem;font-style:italic;margin-bottom:10px">No hacemos</h3>
+          <p class="texto-suave" style="margin:0">Copias de marcas ni pedidos al por mayor con menos de tres semanas. Preferimos tejer bien y poco.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="pie"></div>
+
+<style>
+  @media (max-width: 900px) { .grid-personaliza { grid-template-columns: 1fr !important; } }
+</style>
+
+<script src="assets/js/datos.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
