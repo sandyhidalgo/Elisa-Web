@@ -1196,7 +1196,8 @@ body.menu-abierto #cabecera { z-index: 95; }
 
 .form-envio { min-width: 0; }
 .form-envio .campo { margin-bottom: 14px; gap: 6px; min-width: 0; }
-.form-envio input, .form-envio select, .form-envio textarea { width: 100%; min-width: 0; }
+.form-envio input:not([type="checkbox"]), .form-envio select, .form-envio textarea { width: 100%; min-width: 0; }
+.form-envio .casilla input[type="checkbox"] { flex: 0 0 auto; width: 17px; height: 17px; margin: 3px 0 0; }
 .form-envio .campo textarea { min-height: 70px; }
 .form-envio .fila-campos { gap: 12px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .form-envio-intro { font-size: .86rem; margin: 6px 0 18px; }
