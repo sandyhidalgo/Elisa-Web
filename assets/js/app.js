@@ -29,6 +29,16 @@ function guardarAlmacen(llave, valor) {
 let BOLSA = leerAlmacen(LLAVE_BOLSA);
 let FAVORITOS = leerAlmacen(LLAVE_FAV);
 
+/* Si el catálogo cambia, descartamos lo que quedó guardado de una
+   versión anterior (los pedidos a medida sí se conservan). */
+function limpiarGuardado() {
+  const vigente = id => id.startsWith('medida-') || PRODUCTOS.some(p => p.id === id);
+  const bolsa = BOLSA.filter(i => vigente(i.id));
+  const favs = FAVORITOS.filter(vigente);
+  if (bolsa.length !== BOLSA.length) { BOLSA = bolsa; guardarAlmacen(LLAVE_BOLSA, BOLSA); }
+  if (favs.length !== FAVORITOS.length) { FAVORITOS = favs; guardarAlmacen(LLAVE_FAV, FAVORITOS); }
+}
+
 /* ------------------------------------------------------------
    Logo (SVG) — versión emblema y versión completa
 ------------------------------------------------------------ */
@@ -198,8 +208,7 @@ function pintarPie() {
             <h5>Tienda</h5>
             <ul>
               <li><a href="catalogo.html">Catálogo completo</a></li>
-              <li><a href="catalogo.html#coleccion-elisa">Colección Elisa</a></li>
-              <li><a href="catalogo.html#coleccion-andrea">Colección Andrea</a></li>
+              ${COLECCIONES.map(c => `<li><a href="catalogo.html#coleccion-${c.id}">Colección ${c.nombre}</a></li>`).join('')}
               <li><a href="personaliza.html">Personaliza el tuyo</a></li>
             </ul>
           </div>
@@ -541,7 +550,7 @@ function pintarInicio() {
           <div class="coleccion-cuerpo">
             <span class="coleccion-orden">${c.orden}</span>
             <h3>${c.nombre}</h3>
-            <p>${c.resumen} · ${n} piezas</p>
+            <p>${c.resumen} · desde ${money(c.precioDesde)}</p>
           </div>
         </a>`;
     }).join('');
@@ -658,18 +667,27 @@ function pintarCatalogo() {
 function pintarCabecerasColeccion() {
   const cont = $('#intro-colecciones');
   if (!cont) return;
-  cont.innerHTML = COLECCIONES.map(c => `
-    <div class="dato" id="coleccion-${c.id}">
+  cont.innerHTML = COLECCIONES.map(c => {
+    const n = PRODUCTOS.filter(p => p.coleccion === c.id).length;
+    return `
+    <div class="ficha-coleccion" id="coleccion-${c.id}">
       <h4>${c.orden} · ${c.nombre}</h4>
-      <p style="font-size:1rem;font-style:normal;font-family:var(--sans);color:var(--cacao-medio)">${c.descripcion}</p>
-    </div>`).join('');
+      <p class="ficha-precio">Desde ${money(c.precioDesde)}</p>
+      <p class="ficha-texto">${c.descripcion}</p>
+      <dl class="ficha-datos">
+        <div><dt>Medidas</dt><dd>${c.medidas}</dd></div>
+        <div><dt>Colores</dt><dd>${c.colores}</dd></div>
+        <div><dt>En la web</dt><dd>${n} ${n === 1 ? 'modelo' : 'modelos'}</dd></div>
+      </dl>
+    </div>`;
+  }).join('');
 }
 
 /* ------------------------------------------------------------
    Personalizador
 ------------------------------------------------------------ */
 const pedido = {
-  coleccion: 'luzmila',
+  coleccion: 'sarita',
   color: OPCIONES.colores[0],
   herraje: OPCIONES.herrajes[0],
   tamano: OPCIONES.tamanos[1],
@@ -907,6 +925,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') capa.click();
   });
 
+  limpiarGuardado();
   pintarCabecera();
   pintarPie();
   pintarBolsa();

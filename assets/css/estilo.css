@@ -1053,3 +1053,49 @@ body.menu-abierto #cabecera { z-index: 95; }
   .favorito { width: 32px; height: 32px; top: 9px; right: 9px; }
   .favorito svg { width: 15px; height: 15px; }
 }
+
+/* ---------------- Ficha de colección (catálogo) ---------------- */
+
+.ficha-coleccion {
+  background: #fff;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 26px 24px;
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+}
+.ficha-coleccion h4 {
+  font-family: var(--sans);
+  font-size: .68rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--cacao-suave);
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+.ficha-precio {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.9rem;
+  font-weight: 500;
+  color: var(--rosa-profundo);
+  margin: 0 0 12px;
+  line-height: 1;
+}
+.ficha-texto {
+  margin: 0 0 18px;
+  font-size: .92rem;
+  color: var(--cacao-medio);
+  flex: 1;
+}
+.ficha-datos { margin: 0; display: grid; gap: 10px; }
+.ficha-datos > div { border-top: 1px dashed var(--linea); padding-top: 10px; }
+.ficha-datos dt {
+  font-size: .62rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--cacao-suave);
+  margin-bottom: 3px;
+}
+.ficha-datos dd { margin: 0; font-size: .86rem; color: var(--cacao); }

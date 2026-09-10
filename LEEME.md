@@ -74,10 +74,28 @@ python3 ".claude/serve.py" 4321
 
 y abre `http://127.0.0.1:4321`.
 
+## De dónde salen los datos
+
+Precios, medidas, colores y descripciones vienen del **catálogo oficial** (Marisol, Andrea,
+LilyBag y Sarita):
+
+| Colección | Precio | Medidas |
+|---|---|---|
+| Marisol  | $45     | 25 × 25 cm · asa 100 cm |
+| Andrea   | $40     | 24×30 / 22×28 / 19×45 cm · asa 65–90 cm |
+| LilyBag  | $25–$29 | 26×21 / 29×23 / 28×28 cm |
+| Sarita   | $30     | 17 × 28 cm |
+
+Detalles comunes a todas las piezas: tejido a mano, trapillo premium, accesorios metálicos,
+forro interior, broches seguros y diseño exclusivo.
+
 ## Pendientes sugeridos
 
+- **Revisar a qué colección quedó asignada cada foto.** Las agrupé por parecido visual con el
+  catálogo; hay algunas dudosas (ver más abajo). Cambiar una pieza de colección es editar
+  el campo `coleccion:` de ese producto en `datos.js`.
 - Reemplazar `hola@elisabolsos.com` por el correo real (o quitarlo de `CONFIG`).
-- Confirmar el usuario real de Instagram.
-- Revisar precios y medidas: los que están puestos son una propuesta a partir de la maqueta.
+- Los tiempos de elaboración (8–12 días), la forma de pago y las preguntas frecuentes no venían
+  en el catálogo: los escribí como propuesta. Ajústalos en `contacto.html` y en `CONFIG`.
 - Si algún día quieres pago en línea, se puede añadir un botón de PayPal o de transferencia
   sobre la misma bolsa, sin rehacer el sitio.
