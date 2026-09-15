@@ -2,7 +2,7 @@
    ELISA · Bolsos Tejidos
    Datos del negocio, colecciones y catálogo.
    Precios, medidas y descripciones tomados del catálogo oficial
-   "Catálogo Elisa Bolsos" (Marisol, Andrea, LilyBag y Sarita).
+   "Catálogo Elisa Bolsos" (Marisol, Gabriela, Andrea, LilyBag y Sarita).
    Edita este archivo para cambiar precios, fotos o textos.
    ============================================================ */
 
@@ -21,7 +21,7 @@ const CONFIG = {
   // Plazos: modelos del catálogo y bolsos personalizados
   entregaCatalogo: '3 días laborables',
   diasElaboracion: '8–12 días',
-  envio: 'Envíos a todo Ecuador · Pago contra entrega disponible',
+  envio: 'Envíos a todo Ecuador · 50% de anticipo para confirmar el pedido',
   frase: 'Diseños que cuentan historias. Hechos con amor, tejidos para ti.'
 };
 
@@ -55,7 +55,7 @@ const COLECCIONES = [
     precioDesde: 45,
     medidas: 'Alto 25 cm · Ancho 25 cm · Asa 100 cm',
     descripcion: 'Un bolso formal, diseñado para eventos especiales y looks sofisticados.',
-    colores: 'Negro, rojo, durazno, marrón y lila',
+    colores: 'Rojo, carmín, marrón y lila',
     portada: 'assets/img/productos/marisol-rojo.jpg'
   },
   {
@@ -88,8 +88,21 @@ const COLECCIONES = [
     precioDesde: 30,
     medidas: 'Alto 17 cm · Ancho 28 cm',
     descripcion: 'Piezas únicas tejidas a mano que destacan por su textura, practicidad y diseño atemporal. Con una paleta de colores pensada para cada personalidad y su característica borla decorativa.',
-    colores: 'Terracota, turquesa, verde olivo, café oscuro, vino y azul',
+    colores: 'Terracota, turquesa, verde olivo, café oscuro, vino, azul y negro',
     portada: 'assets/img/productos/sarita-arena.jpg'
+  },
+  {
+    id: 'gabriela',
+    nombre: 'Gabriela',
+    orden: '05',
+    resumen: 'Sobre con flores tejidas',
+    precioDesde: 45,
+    medidas: 'Alto 25 cm · Ancho 25 cm',
+    descripcion: 'El sobre más romántico del taller: punto grueso en tono crudo, flores tejidas a mano y argollas doradas.',
+    colores: 'Crudo',
+    /* La foto conserva el nombre de archivo antiguo (marisol-crudo.jpg) para no
+       tener que volver a subir la imagen ni su miniatura de assets/img/sm/. */
+    portada: 'assets/img/productos/marisol-crudo.jpg'
   }
 ];
 
@@ -101,7 +114,8 @@ const MEDIDAS = {
   lilyA: '26 × 21 cm',
   lilyB: '29 × 23 cm',
   lilyC: '28 × 28 cm',
-  sarita: '17 × 28 cm'
+  sarita: '17 × 28 cm',
+  gabriela: '25 × 25 cm'
 };
 
 const PRODUCTOS = [
@@ -125,16 +139,6 @@ const PRODUCTOS = [
     img: 'productos/marisol-lila.jpg', medidas: MEDIDAS.marisol,
     descripcion: 'Lila suave con broche giratorio dorado y cadena plateada desmontable, para llevarlo también de mano.',
     detalles: ['Broche giratorio dorado', 'Cadena desmontable', 'Borla a juego', 'Forro interior'] },
-
-  { id: 'marisol-crudo', nombre: 'Marisol Crudo', coleccion: 'marisol', precio: 45, color: 'Crudo',
-    img: 'productos/marisol-crudo.jpg', medidas: MEDIDAS.marisol,
-    descripcion: 'El más sobrio de la colección: crudo natural, argolla dorada y cordón tejido a mano.',
-    detalles: ['Argolla dorada', 'Cordón tejido', 'Solapa con broche', 'Forro interior'] },
-
-  { id: 'marisol-negro', nombre: 'Marisol Negro', coleccion: 'marisol', precio: 45, color: 'Negro',
-    img: 'productos/marisol-negro.jpg', medidas: MEDIDAS.marisol,
-    descripcion: 'Negro profundo con asas trenzadas a mano y placa metálica firmada. El de siempre para la noche.',
-    detalles: ['Asas trenzadas a mano', 'Placa metálica firmada', 'Base reforzada', 'Forro interior'] },
 
   /* ---------- Colección Andrea · $40 ---------- */
   { id: 'andrea-negro', nombre: 'Andrea Negro', coleccion: 'andrea', precio: 40, color: 'Negro', destacado: true,
@@ -194,6 +198,13 @@ const PRODUCTOS = [
     detalles: ['Flecos en contraste', 'Bandolera tejida', 'Broche de seguridad', 'Forro interior'] },
 
   /* ---------- Colección Sarita · $30 ---------- */
+  /* La foto conserva el nombre de archivo antiguo (marisol-negro.jpg) para no
+     tener que volver a subir la imagen ni su miniatura de assets/img/sm/. */
+  { id: 'sarita-negro', nombre: 'Sarita Negro', coleccion: 'sarita', precio: 30, color: 'Negro', destacado: true,
+    img: 'productos/marisol-negro.jpg', medidas: MEDIDAS.sarita,
+    descripcion: 'Negro profundo con asas trenzadas a mano, bandolera larga, borla a juego y placa metálica firmada. El de siempre para la noche.',
+    detalles: ['Asas trenzadas a mano', 'Bandolera trenzada', 'Borla a juego', 'Placa metálica firmada'] },
+
   { id: 'sarita-arena', nombre: 'Sarita Arena', coleccion: 'sarita', precio: 30, color: 'Arena', destacado: true,
     img: 'productos/sarita-arena.jpg', medidas: MEDIDAS.sarita,
     descripcion: 'Cuerpo alargado en trapillo arena, asa trenzada y la borla decorativa que caracteriza a toda la colección.',
@@ -247,7 +258,14 @@ const PRODUCTOS = [
   { id: 'sarita-violeta', nombre: 'Sarita Violeta', coleccion: 'sarita', precio: 30, color: 'Violeta',
     img: 'productos/sarita-violeta.jpg', medidas: MEDIDAS.sarita,
     descripcion: 'Violeta profundo con asa ancha para el hombro. Uno de los tonos que más rápido se agota.',
-    detalles: ['Asa ancha tejida', 'Borla decorativa', 'Placa metálica', 'Forro interior'] }
+    detalles: ['Asa ancha tejida', 'Borla decorativa', 'Placa metálica', 'Forro interior'] },
+
+  /* ---------- Colección Gabriela · $45 ---------- */
+  /* Misma advertencia sobre el nombre de archivo de la foto. */
+  { id: 'gabriela-crudo', nombre: 'Gabriela Crudo', coleccion: 'gabriela', precio: 45, color: 'Crudo', destacado: true, nuevo: true,
+    img: 'productos/marisol-crudo.jpg', medidas: MEDIDAS.gabriela,
+    descripcion: 'Crudo natural en punto grueso, con flores tejidas a mano, argollas doradas y placa metálica firmada.',
+    detalles: ['Flores tejidas a mano', 'Argollas doradas', 'Placa metálica firmada', 'Forro interior'] }
 ];
 
 /* Todas las piezas comparten los detalles del catálogo */
