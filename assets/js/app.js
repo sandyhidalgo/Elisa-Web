@@ -139,10 +139,10 @@ const ICONOS = {
    Cabecera y pie
 ------------------------------------------------------------ */
 const PAGINAS = [
-  { id: 'inicio', texto: 'Inicio', url: 'index.html' },
-  { id: 'catalogo', texto: 'Catálogo', url: 'catalogo.html' },
-  { id: 'personaliza', texto: 'Personaliza', url: 'personaliza.html' },
-  { id: 'contacto', texto: 'Contacto', url: 'contacto.html' }
+  { id: 'inicio', texto: 'Inicio', url: '/' },
+  { id: 'catalogo', texto: 'Catálogo', url: '/catalogo' },
+  { id: 'personaliza', texto: 'Personaliza', url: '/personaliza' },
+  { id: 'contacto', texto: 'Contacto', url: '/contacto' }
 ];
 
 function pintarCabecera() {
@@ -152,7 +152,7 @@ function pintarCabecera() {
   host.innerHTML = `
     <header class="cabecera">
       <div class="contenedor cabecera-fila">
-        <a class="marca" href="index.html">
+        <a class="marca" href="/">
           ${logoEmblema('cab')}
           <span class="marca-texto">
             <span class="marca-nombre">Elisa</span>
@@ -189,7 +189,7 @@ function pintarCabecera() {
       const chip = $('.chip[data-coleccion="favoritos"]');
       if (chip) { chip.click(); chip.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     } else {
-      location.href = 'catalogo.html#favoritos';
+      location.href = '/catalogo#favoritos';
     }
   });
 }
@@ -202,7 +202,7 @@ function pintarPie() {
       <div class="contenedor">
         <div class="pie-grid">
           <div>
-            <a class="marca" href="index.html">
+            <a class="marca" href="/">
               ${logoEmblema('pie')}
               <span class="marca-texto">
                 <span class="marca-nombre">Elisa</span>
@@ -214,9 +214,9 @@ function pintarPie() {
           <div>
             <h5>Tienda</h5>
             <ul>
-              <li><a href="catalogo.html">Catálogo completo</a></li>
-              ${COLECCIONES.map(c => `<li><a href="catalogo.html#coleccion-${c.id}">Colección ${c.nombre}</a></li>`).join('')}
-              <li><a href="personaliza.html">Personaliza el tuyo</a></li>
+              <li><a href="/catalogo">Catálogo completo</a></li>
+              ${COLECCIONES.map(c => `<li><a href="/catalogo#coleccion-${c.id}">Colección ${c.nombre}</a></li>`).join('')}
+              <li><a href="/personaliza">Personaliza el tuyo</a></li>
             </ul>
           </div>
           <div>
@@ -225,7 +225,7 @@ function pintarPie() {
               <li>${CONFIG.envio.split('·')[0].trim()}</li>
               <li>Catálogo: entrega en ${CONFIG.entregaCatalogo}</li>
               <li>Personalizados: ${CONFIG.diasElaboracion}</li>
-              <li><a href="contacto.html">Contacto y preguntas frecuentes</a></li>
+              <li><a href="/contacto">Contacto y preguntas frecuentes</a></li>
             </ul>
           </div>
           <div>
@@ -239,10 +239,10 @@ function pintarPie() {
         <div class="pie-abajo">
           <span>© <span id="anio"></span> Elisa · Bolsos tejidos a mano</span>
           <nav class="pie-legal" aria-label="Información legal">
-            <a href="aviso-legal.html">Aviso legal</a>
-            <a href="terminos.html">Condiciones de venta</a>
-            <a href="privacidad.html">Privacidad</a>
-            <a href="cookies.html">Cookies</a>
+            <a href="/aviso-legal">Aviso legal</a>
+            <a href="/terminos">Condiciones de venta</a>
+            <a href="/privacidad">Privacidad</a>
+            <a href="/cookies">Cookies</a>
           </nav>
         </div>
       </div>
@@ -372,7 +372,7 @@ function refrescarBolsa() {
       <div class="bolsa-vacia">
         ${ICONOS.bolsa}
         <p>Tu carrito está vacío todavía.</p>
-        <a class="boton boton-secundario" href="catalogo.html">Ver el catálogo</a>
+        <a class="boton boton-secundario" href="/catalogo">Ver el catálogo</a>
       </div>`;
     $('#bolsa-pie').innerHTML = '';
     return;
@@ -462,7 +462,7 @@ function pintarPasoDatos() {
 
       <label class="casilla ${d.acepto ? 'activa' : ''}" for="envio-acepto">
         <input type="checkbox" id="envio-acepto" name="acepto" required ${d.acepto ? 'checked' : ''}>
-        <span>He leído la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a> y las <a href="terminos.html" target="_blank" rel="noopener">condiciones de venta</a>, y acepto que usen estos datos para gestionar mi pedido. *</span>
+        <span>He leído la <a href="/privacidad" target="_blank" rel="noopener">política de privacidad</a> y las <a href="/terminos" target="_blank" rel="noopener">condiciones de venta</a>, y acepto que usen estos datos para gestionar mi pedido. *</span>
       </label>
     </form>`;
 
@@ -652,7 +652,7 @@ function abrirProducto(id) {
           </div>
           <button class="boton boton-principal" id="agregar-modal">Agregar al carrito</button>
         </div>
-        <p class="pista" style="margin-top:14px">¿Lo quieres en otro color? <a href="personaliza.html" style="color:var(--rosa-profundo);text-decoration:underline;text-underline-offset:3px">Tejemos el tuyo a medida</a>.</p>
+        <p class="pista" style="margin-top:14px">¿Lo quieres en otro color? <a href="/personaliza" style="color:var(--rosa-profundo);text-decoration:underline;text-underline-offset:3px">Tejemos el tuyo a medida</a>.</p>
       </div>
     </div>`;
 
@@ -698,7 +698,7 @@ function pintarInicio() {
     gridCol.innerHTML = COLECCIONES.map(c => {
       const n = PRODUCTOS.filter(p => p.coleccion === c.id).length;
       return `
-        <a class="coleccion revelar" href="catalogo.html#coleccion-${c.id}">
+        <a class="coleccion revelar" href="/catalogo#coleccion-${c.id}">
           <div class="coleccion-foto"><img src="${fotoSm(c.portada.replace('assets/img/', ''))}" alt="Colección ${c.nombre}" loading="lazy"></div>
           <div class="coleccion-cuerpo">
             <span class="coleccion-orden">${c.orden}</span>
@@ -808,7 +808,7 @@ function pintarCatalogo() {
         <p>${estadoCatalogo.coleccion === 'favoritos'
           ? 'Toca el corazón de las piezas que te gusten y las guardamos aquí.'
           : 'Prueba con otro color o mira todas las colecciones.'}</p>
-        <a class="boton boton-secundario" href="personaliza.html">Personaliza el tuyo</a>
+        <a class="boton boton-secundario" href="/personaliza">Personaliza el tuyo</a>
       </div>`;
     return;
   }
