@@ -167,7 +167,7 @@ function pintarCabecera() {
             ${ICONOS.corazon}
             <span class="contador" id="contador-favoritos">0</span>
           </button>
-          <button class="boton-icono" id="btn-bolsa" aria-label="Abrir la bolsa" title="Mi bolsa">
+          <button class="boton-icono" id="btn-bolsa" aria-label="Abrir el carrito" title="Mi carrito">
             ${ICONOS.bolsa}
             <span class="contador" id="contador-bolsa">0</span>
           </button>
@@ -289,7 +289,7 @@ function agregarABolsa(item, cantidad = 1) {
   else BOLSA.push({ ...item, cantidad });
   guardarAlmacen(LLAVE_BOLSA, BOLSA);
   refrescarBolsa();
-  aviso(`${item.nombre} está en tu bolsa`);
+  aviso(`${item.nombre} está en tu carrito`);
 }
 
 function cambiarCantidad(indice, delta) {
@@ -315,8 +315,8 @@ function pintarBolsa() {
   aside.setAttribute('aria-label', 'Bolsa de compras');
   aside.innerHTML = `
     <div class="bolsa-cabecera">
-      <h2>Tu bolsa</h2>
-      <button class="cerrar" id="cerrar-bolsa" aria-label="Cerrar la bolsa">${ICONOS.cerrar}</button>
+      <h2>Tu carrito</h2>
+      <button class="cerrar" id="cerrar-bolsa" aria-label="Cerrar el carrito">${ICONOS.cerrar}</button>
     </div>
     <div class="bolsa-items" id="bolsa-items"></div>
     <div class="bolsa-pie" id="bolsa-pie"></div>`;
@@ -334,6 +334,18 @@ const PROVINCIAS = ['Azuay', 'Bolívar', 'Cañar', 'Carchi', 'Chimborazo', 'Coto
   'Galápagos', 'Guayas', 'Imbabura', 'Loja', 'Los Ríos', 'Manabí', 'Morona Santiago', 'Napo', 'Orellana',
   'Pastaza', 'Pichincha', 'Santa Elena', 'Santo Domingo de los Tsáchilas', 'Sucumbíos', 'Tungurahua',
   'Zamora Chinchipe'];
+
+/* Los personalizados cambian lo que prometemos: precio estimado,
+   anticipo y sin cambios ni devoluciones. */
+function hayPersonalizados() { return BOLSA.some(esPersonalizado); }
+
+function etiquetaTotal() { return hayPersonalizados() ? 'Total estimado' : 'Total'; }
+
+function avisoPersonalizados() {
+  return hayPersonalizados()
+    ? `<p class="nota-pie">Personalizados — el precio es estimado y lo confirmamos por WhatsApp · 50 % de anticipo para empezar · no admiten cambios ni devoluciones.</p>`
+    : '';
+}
 
 function textoPlazos() {
   const hayCatalogo = BOLSA.some(i => !esPersonalizado(i));
@@ -359,7 +371,7 @@ function refrescarBolsa() {
     lista.innerHTML = `
       <div class="bolsa-vacia">
         ${ICONOS.bolsa}
-        <p>Todavía no has elegido ninguna pieza.</p>
+        <p>Tu carrito está vacío todavía.</p>
         <a class="boton boton-secundario" href="catalogo.html">Ver el catálogo</a>
       </div>`;
     $('#bolsa-pie').innerHTML = '';
@@ -389,7 +401,7 @@ function refrescarBolsa() {
     </article>`).join('');
 
   $('#bolsa-pie').innerHTML = `
-    <div class="total"><span>Total</span><strong>${money(totalBolsa())}</strong></div>
+    <div class="total"><span>${etiquetaTotal()}</span><strong>${money(totalBolsa())}</strong></div>
     <p class="nota-pie">${CONFIG.envio}. Plazos — ${textoPlazos()}. El costo de envío te lo confirmamos por WhatsApp.</p>
     <button class="boton boton-principal boton-bloque" id="ir-datos">Continuar con el envío</button>`;
 
@@ -415,7 +427,7 @@ function pintarPasoDatos() {
   const opcion = p => `<option ${d.provincia === p ? 'selected' : ''}>${p}</option>`;
   $('#bolsa-items').innerHTML = `
     <form id="form-envio" class="form-envio" novalidate>
-      <button type="button" class="volver-bolsa" id="volver-bolsa">&larr; Volver a la bolsa</button>
+      <button type="button" class="volver-bolsa" id="volver-bolsa">&larr; Volver al carrito</button>
       <p class="texto-suave form-envio-intro">${unidadesBolsa()} ${unidadesBolsa() === 1 ? 'pieza' : 'piezas'} · ${money(totalBolsa())}. Completa tus datos y te llegan escritos en el WhatsApp.</p>
 
       <div class="campo">
@@ -455,8 +467,9 @@ function pintarPasoDatos() {
     </form>`;
 
   $('#bolsa-pie').innerHTML = `
-    <div class="total"><span>Total</span><strong>${money(totalBolsa())}</strong></div>
+    <div class="total"><span>${etiquetaTotal()}</span><strong>${money(totalBolsa())}</strong></div>
     <p class="nota-pie">Plazos — ${textoPlazos()}. El costo de envío se suma al confirmar.</p>
+    ${avisoPersonalizados()}
     <p class="pista form-envio-error" id="envio-error" role="alert" hidden></p>
     <button type="submit" form="form-envio" class="boton boton-wa boton-bloque" id="pedir-wa">${ICONOS.whatsapp} Enviar pedido por WhatsApp</button>
     <p class="pista" style="margin-top:10px;text-align:center">Se abre WhatsApp con todo escrito. Tú solo lo envías.</p>`;
@@ -495,8 +508,12 @@ function pintarPasoDatos() {
 
 function mensajePedido() {
   const d = DATOS_ENVIO;
-  const lineas = BOLSA.map(i =>
-    `• ${i.cantidad} × ${i.nombre}${i.meta ? ` (${i.meta})` : ''} — ${money(i.precio * i.cantidad)}`);
+  const lineas = BOLSA.map(i => {
+    let l = `• ${i.cantidad} × ${i.nombre}${i.meta ? ` (${i.meta})` : ''} — ${money(i.precio * i.cantidad)}`;
+    if (i.extras) l += `\n   Detalles: ${i.extras}`;
+    if (i.notas) l += `\n   Notas para el taller: ${i.notas.replace(/\s*\n\s*/g, ' ')}`;
+    return l;
+  });
   const datos = [
     `Nombre completo: ${d.nombre.trim()}`,
     d.cedula.trim() && `Cédula: ${d.cedula.trim()}`,
@@ -505,7 +522,13 @@ function mensajePedido() {
     `Dirección de entrega: ${d.direccion.trim().replace(/\s*\n\s*/g, ', ')}`,
     d.referencia.trim() && `Referencia: ${d.referencia.trim()}`
   ].filter(Boolean);
-  return `¡Hola Elisa! Quiero hacer este pedido 💗\n\n${lineas.join('\n')}\n\nTotal: ${money(totalBolsa())} (sin envío)\nPlazo: ${textoPlazos()}\n\n📦 Datos de envío\n${datos.join('\n')}`;
+  const total = hayPersonalizados()
+    ? `Total estimado: ${money(totalBolsa())} (sin envío) — los personalizados se confirman por WhatsApp`
+    : `Total: ${money(totalBolsa())} (sin envío)`;
+  const condiciones = hayPersonalizados()
+    ? `\n\n✳️ Personalizados: 50 % de anticipo para empezar y no admiten cambios ni devoluciones.`
+    : '';
+  return `¡Hola Elisa! Quiero hacer este pedido 💗\n\n${lineas.join('\n')}\n\n${total}\nPlazo: ${textoPlazos()}${condiciones}\n\n📦 Datos de envío\n${datos.join('\n')}`;
 }
 
 function enlaceWhatsApp(texto) {
@@ -565,7 +588,7 @@ function tarjetaProducto(p) {
         <h3>${p.nombre}</h3>
         <div class="producto-precio">${money(p.precio)}</div>
         <div class="producto-acciones">
-          <button class="boton boton-principal" data-agregar="${p.id}">Añadir</button>
+          <button class="boton boton-principal" data-agregar="${p.id}">Agregar</button>
           <button class="boton boton-secundario" data-ver="${p.id}">Ver</button>
         </div>
       </div>
@@ -627,7 +650,7 @@ function abrirProducto(id) {
             <span id="cantidad-modal">1</span>
             <button id="mas-modal" aria-label="Añadir una unidad">+</button>
           </div>
-          <button class="boton boton-principal" id="agregar-modal">Añadir a la bolsa</button>
+          <button class="boton boton-principal" id="agregar-modal">Agregar al carrito</button>
         </div>
         <p class="pista" style="margin-top:14px">¿Lo quieres en otro color? <a href="personaliza.html" style="color:var(--rosa-profundo);text-decoration:underline;text-underline-offset:3px">Tejemos el tuyo a medida</a>.</p>
       </div>
@@ -933,29 +956,9 @@ function refrescarResumen() {
   }
 }
 
-function textoPedidoPersonalizado() {
-  const c = calcularPedido();
-  const col = COLECCIONES.find(x => x.id === pedido.coleccion);
-  let t = `¡Hola Elisa! Quiero un bolso hecho a mi medida 💗\n\n`;
-  t += `Modelo base: ${col.nombre} (${col.resumen})\n`;
-  t += `Tamaño: ${pedido.tamano.nombre} — ${pedido.tamano.detalle}\n`;
-  t += `Color del trapillo: ${pedido.color.nombre}\n`;
-  t += `Herrajes: ${pedido.herraje.nombre}\n`;
-  if (pedido.extras.length) t += `Detalles: ${pedido.extras.map(e => e.nombre).join(', ')}\n`;
-  if (pedido.nombrePlaca.trim()) t += `Placa con el nombre: ${pedido.nombrePlaca.trim()}\n`;
-  if (pedido.notas.trim()) t += `Notas: ${pedido.notas.trim()}\n`;
-  t += `\nEstimado según la web: ${money(c.total)}\n\nMi nombre: \nCiudad de envío: `;
-  return t;
-}
-
+/* El bolso a medida entra al carrito como cualquier otra pieza: así pasa
+   por el mismo formulario de envío y por la misma casilla de privacidad. */
 function conectarBotonesPersonalizador() {
-  const wa = $('#enviar-personalizado');
-  if (wa) {
-    wa.addEventListener('click', e => {
-      e.preventDefault();
-      window.open(enlaceWhatsApp(textoPedidoPersonalizado()), '_blank', 'noopener');
-    });
-  }
   const guardar = $('#guardar-personalizado');
   if (guardar) {
     guardar.addEventListener('click', () => {
@@ -966,7 +969,9 @@ function conectarBotonesPersonalizador() {
         nombre: `${col.nombre} a medida`,
         precio: Number(c.total.toFixed(2)),
         img: fotoSm(col.portada.replace('assets/img/', '')),
-        meta: `${pedido.tamano.nombre} · ${pedido.color.nombre} · ${pedido.herraje.nombre}${pedido.nombrePlaca.trim() ? ' · placa «' + pedido.nombrePlaca.trim() + '»' : ''}`
+        meta: `${pedido.tamano.nombre} · ${pedido.color.nombre} · ${pedido.herraje.nombre}${pedido.nombrePlaca.trim() ? ' · placa «' + pedido.nombrePlaca.trim() + '»' : ''}`,
+        extras: pedido.extras.map(e => e.nombre).join(', '),
+        notas: pedido.notas.trim()
       });
       abrirBolsa();
     });
